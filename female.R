@@ -3,6 +3,7 @@
 ###Updated: 3/11/2019
 library(pls)
 setwd("~/Desktop/DGRP")  
+#data file found on GEO Accession, unable to upload data file to Github due to file's size 
 female = read.table("~/Desktop/DGRP/dgrp.array.exp.female.txt", quote="\"", comment.char="", header = FALSE)
 female = t(female)
 female[1,1] = "sample" #down all X and across all genes 
