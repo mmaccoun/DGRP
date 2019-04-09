@@ -1,39 +1,41 @@
 ####DGRP ANALYSIS
 ###Created 3/10/2019
-###Updated: 3/17/2019
+###Updated: 4/9/2019
 
-####PURPOSE: this file will format the data needed to test and train
+####PURPOSE: process and combine male and female data 
+####         female represented in col1 as [1, ] as 0, male represented in [1, ] as 1 
+####OUTPUT: a csv file containing data from female and male
 
-library("caret")
+library(lattice)
+library(ggplot2)
+library(caret)
 
+setwd("~/Downloads/DGRP-master")
 
-setwd("~/Desktop/DGRP")  
-
-##import data 
-female = read.table("~/Desktop/DGRP/dgrp.array.exp.female.txt", quote="\"", comment.char="", header = FALSE)
-#print(female[1:5,1:5]) #add sex and rep ID columns 
-print(set.seed(100))
-
-female = t(female) 
-dim(female)
-trainXX = female[2:245, 2:18141]
-testXX = female[246:369, 2:18141]
-
-#dim(female) #369 18141 
+##############      import and format data      ##############
 
 
-male = read.table("~/Desktop/DGRP/dgrp.array.exp.male.txt", quote="\"", comment.char="", header = FALSE)
-male = t(male)
-dim(male)
-trainXY = male[2:247,2:18141] 
-testXY = male[248:370,2:18141]
-#dim(male) #370 18141
+## get female data 
+female = read.table("./dgrp.array.exp.female.txt", quote="\"", comment.char="", header = FALSE)
+female = t(female) #row is a sample & one row is sex, [,1] is all the samples, sex is a column = 0 but [,2:] is genes
+female[,1] = 0 #change sample names to all 0 for ID as female... now [,1] is all 0 and rest are genes 
+
+female = as.data.frame(female) #values as integers 
+dim(female) #368 sampes, 18140 genes measured  
+print(female[1:5,1:5])
+
+#print(female[1:5, 1:5])
+
+## get male data 
+male = read.table("./dgrp.array.exp.male.txt", quote="\"", comment.char="", header = FALSE)
+male = t(male) #row is a sample & one row is sex, [,1] is all the samples, sex is a column = 0 but [,2:] is genes
+male[,1] = 1
+male = as.data.frame(male)
+print(male[1:5,1:5])
+dim(male) #369 samples, 18140 genes measured 
 
 
-##add column to ID replicate and sex 
-train = rbind(trainXX, trainXY) #combine all male and female (X = sample, Y = gene)
-dim(total)
-total = as.factor(total[2:739, 2:18141])
+## combine to one dataframe 
+final = rbind(female,male[2:370,]) #dont include male[1, ] header info from male
+write.csv(final, file = "all_data.csv")
 
-trainSet = rbind(trainXX,trainXY)
-testSet = rbind(testXX, testXY)
