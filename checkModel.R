@@ -1,7 +1,8 @@
 ####DGRP ANALYSIS
 ###Created 4/19/2019
-###Updated: 4/23/2019
+###Updated: 4/25/2019
 
+##STATUS: in progress 
 ####PURPOSE: separate data in training and testing sets (2:1)
 ####         see if PLS-DA model will be able to segregarte sex  of sample using 
 ##             transcriptome data
@@ -16,31 +17,48 @@ setwd("~/Desktop/DGRP")
 set.seed(100)
 ###CAN ALSO RANDOMIZE NOVEL GENOMES ENC 
 dat  = read.csv("final.csv", header = T)
+##set binary for sex 
+##maybe unneccissary 
+dat[dat$sex == "female"] = 0
+dat[dat$sex == "male"] = 1
+
 #create predictor 
-y = as.factor(dat$sex)
 
-
-
-
-
-rep1_DAT = dat[(!dat$rep==2) , ] ##only use the rep 1 samples 
+#################      partition data for testing and training      ##############
+###only use rep 1 samples, remove irrel. data 
+rep1_DAT = dat[!(dat$rep==2) , ] ##only use the rep 1 samples 
 rep1_DAT = rep1_DAT[, 1 : 18142] #remove ID, strain, rep
 rep1_DAT = rep1_DAT[-1, -1 ]
 #rep1_DAT = factor(rep1_DAT)
-rep1_DAT
+split = createDataPartition(rep1_DAT, p = 0.75, list = F)
+trainDat = rep1_DAT[-train, ] #737 obs 
+testDat = rep1_DAT[train, ] #277z obs 
 
-#################      partition data for TTdat      ##############
-train = createDataPartition(rep1_DAT$sex, p = 0.75, list = F)
-trainDat = rep1_DAT[train, ] #488 obs 
-testDat = rep1_DAT[-train, ] #488 obs 
+dim(trainDat)
+dim(rep1_Y)
 
-#################      treat data for binary      ##############
+
+
+#################      partition data for testing and training      ##############
+rep1_Y = trainDat[!is.na(c(trainDat$sex))] #what to predict
+rep1_Y = rep1_Y$sex
+
+
+
+#################      create feature matrix      ##############
+
+rep1.feat.mat = trainDat[!is.na(trainDat$sex), 1:18140]
+#rep1.feat.mat = scale(rep1.feat.mat, center = TRUE, scale = TRUE)
+rep1.feat.mat = as.data.frame(rep1.feat.mat)
+dim(rep1.feat.mat)
+dim(rep1_Y)
+#################      train data      ##############
 nfold = 3
 
-train.dr = caret::train(x = trainDat, y = trainDat$sex, method = "pls", preProcess = NULL, 
+train.dr = caret::train(rep1.feat.mat, rep1_Y, method = "pls", preProcess = NULL,
                         tuneLength = 10,
                         trControl = trainControl(method = "cv", number = nfold, 
-                                                 savePredictions = TRUE, classProbs = TRUE))
+                                                 savePredictions = TRUE, classProbs = TRUE)) 
 
 
 #change sex to binary 
@@ -115,12 +133,4 @@ plot(train.al, ylab = "Accuracy (3-fold CV)", cex.lab = 1.5, cex.axis = 1.25)
 
             
                                                                                                     
-                                                                                                                                                                                                         replacement has 380 rows, data has 216
-                                                                                                                                                                                                       
-                                                                                                                                                                                                       3: model fit failed for Fold3: ncomp=3 Error in `$<-.data.frame`(`*tmp*`, "x", value = structure(c("line_26.2",  : 
-                                                                                                                                                                                                                                                                                                            replacement has 381 rows, data has 217
-                                                                                                                                                                                                                                                                                                          
-                                                                                                                                                                                                                                                                                                          4: model fit failed for Fold4: ncomp=3 Error in `$<-.data.frame`(`*tmp*`, "x", value = structure(c("gene", "line_21.1",  : 
-                                                                                                                                                                                                                                                                                                                                                                                                               replacement has 379 rows, data has 215
-                                                                                                                                                                                                                                                                                                                                                                                                             
-                                                                                                                                                                                                                                                                                                                                                                                                                                          There were missing values in resampled performance measures.
+                                                                                                                                                                                                        
