@@ -11,10 +11,7 @@ library(e1071)
 library(caret)
 setwd("~/Desktop/DGRP")
 set.seed(100)
-###CAN ALSO RANDOMIZE NOVEL GENOMES ENC 
 dat  = read.csv("final.csv", header = T)
-##set binary for sex 
-##maybe unneccissary 
 
 #################      partition data for testing and training      ##############
 ###only use rep 1 samples, remove irrel. data 
@@ -24,8 +21,6 @@ rep1_DAT = rep1_DAT[-1, -1 ]
 typeof(rep1_DAT)
 dim(trainDat)
 dim(rep1_Y)
-
-
 
 #################      partition data for testing and training      ##############
 ##split rep 1 samples into train and test sets 
@@ -50,7 +45,7 @@ REP1_feat.mat = as.data.frame(REP1_feat.mat)
 nfold = 3
 control = trainControl(method = "cv", number = nfold, 
                        savePredictions = TRUE, classProbs = TRUE)
-
+                                
 REP1_feat.mat$sex = NULL
 REP1_train = train(REP1_feat.mat, REP1_Y, method = "pls", preProcess = NULL, 
                         tuneLength = 10, 
