@@ -2,7 +2,7 @@
 ###Created 4/19/2019
 ###Updated: 4/28/2019
 
-####PURPOSE: using only rep1 of all samples
+####PURPOSE: using only rep1 of all samples (ensures strains are unique in data)
 ####         see if PLS-DA model will be able to segregarte sex  of sample using 
 ##             transcriptome data
 
