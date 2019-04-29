@@ -2,7 +2,7 @@
 ###Created 4/19/2019
 ###Updated: 4/28/2019
 
-####PURPOSE: separate data in training and testing sets (2:1)
+####PURPOSE: using only rep1 of all samples
 ####         see if PLS-DA model will be able to segregarte sex  of sample using 
 ##             transcriptome data
 
