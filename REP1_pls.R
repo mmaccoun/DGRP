@@ -58,6 +58,8 @@ REP1_testDat$sex = NULL
 REP1_model = predict(REP1_train, newdata = REP1_testDat)
 REP1_results = confusionMatrix(data = REP1_model, REP1_testResults)
 REP1_results #see comments for output
+                                
+#################       results      ##############
 
 #Confusion Matrix and Statistics
 
